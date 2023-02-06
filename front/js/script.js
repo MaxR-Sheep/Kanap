@@ -26,15 +26,14 @@ console.log(requeteAllProduit);
 
 function afficheProduits(listProduct){
     listProduct.forEach((product,index) => {
-        console.log("numero du produit:" + index + ", nom du produit " + product.name);
+        console.log("numero du produit:" + index + ", nom du produit: " + product.name);
         
         sectionItems = document.getElementById("items")
 
         let newLien = document.createElement("a");
-        newLien.setAttribute("href",`./product.html?id=${search_params._id}`);
-        
+        newLien.setAttribute("href",`./product.html?id=${product._id}`);
         sectionItems.appendChild(newLien);
-        
+
         let newArticle = document.createElement("article");
         newLien.appendChild(newArticle);
 
@@ -55,12 +54,12 @@ function afficheProduits(listProduct){
     });
 };
 
+let pageArticle = ""
 
-
-let search_params = new URLSearchParams(requeteAllProduit.search);
-
-if (search_params.has('id')){
-    let identifant = search_params.get('id');
+let search_params = new URLSearchParams(pageArticle);
+console.log(pageArticle);
+if (search_params.has("id")){
+    let identifant = search_params.get("id");
     console.log(identifant);
 };
 
