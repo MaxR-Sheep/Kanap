@@ -29,7 +29,7 @@ function recupProduit(){
         });
 
 };
-recupProduit();
+
 
 /* fonction pour appeller le produit avec son image son prix et description */
 function produitKanap(afficheProduit){  
@@ -41,13 +41,13 @@ function produitKanap(afficheProduit){
     const itemImage = document.querySelector(".item__img");
     itemImage.appendChild(newImage);
     console.log(newImage);
-/* affichage du h1*/
+/* affichage du h1 et du nom du canapé*/
     let titreH1 = document.getElementById("title");
     titreH1.innerText = afficheProduit.name;
-/* affichage du prix*/
+/* affichage du prix */
     let priceProduct = document.getElementById("price");
     priceProduct.innerText = afficheProduit.price;
-/* afficher la description*/
+/* afficher la description */
     let descriptionProduit = document.getElementById("description");
     descriptionProduit.innerText = afficheProduit.description;
 
@@ -70,7 +70,6 @@ function appelCouleur(afficheProduit){
     };
 };
 
-
 //fonction qui sélectionne la couleur souhaiter
 function saveColorLet(){
     const valurOfSelect = document.getElementById("colors").value;
@@ -78,33 +77,32 @@ function saveColorLet(){
     console.log("vous avez choisi la couleur " + valeurCouleur);
 };
 
-//fonction pour mémoriser la quantité
-let quantityKanap = "";
-const valeurQuantity = document.getElementById("quantity").value;
-    valeurQuantity.setAttribute("onchange", "saveQuantity()");
-function saveQuantity(){
-    
-    quantityKanap = valeurQuantity;
-    console.log(" la quantité chaoisit est de: ", quantityKanap );
-}
+//element attacher a l'id quantity
+let quantity = document.getElementById("quantity").value;
+console.log(quantity);
 
-
-
+// utilisation de bouton pour ajouté au panier
+const btnAddToPanier = document.getElementById("addToCart");
+btnAddToPanier.setAttribute("onclick", "btnAddPanier()");
 
 // utilisation du localStorage pour envoyé les élements dans le panier
 function btnAddPanier(){
     if (valeurCouleur !==""){
-        requetProduit.forEach(kanap => {
-            if (kanap.idKanap === idKanap) {
-                // ici on enregiste dans le localStorageles info du canapé personnalisé
-                let persoKanap = {
-                    kanapID : kanap.idKanap ,
-                    kanapName : kanap.name ,
-                    kanapColor : valeurCouleur,
-                    kanapQuantity
-
-                }
-            }
-        });
+        // ici on enregiste dans le localStorageles info du canapé personnalisé
+        let persoKanap = {
+            id:  idKanap,
+            name : afficheProduit.name , // ? n'arrive pas a récuperer le nom
+            color : valeurCouleur,
+            quantity : quantity,
+        }
+        /*let objPersoKanap = JSON.stringify(persoKanap);
+        localStorage.setItem("objKanap", objPersoKanap);*/ //fonction pour enregister dans le localStorage
+        console.log(`canapé personnalisé ajouté au localStorage(id: ${persoKanap.id} | name: ${persoKanap.name} | color: ${persoKanap.color} | quantity: ${persoKanap.quantity})`);
+        console.log(localStorage);
+    } else {
+        window.alert ("choississez une couleur de canapé avant de valider")
     }
+
 }
+
+recupProduit();
