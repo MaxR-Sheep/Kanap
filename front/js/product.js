@@ -91,13 +91,12 @@ function btnAddPanier(){
         // ici on enregiste dans le localStorageles info du canapé personnalisé
         let persoKanap = {
             id:  idKanap,
-            name : afficheProduit.name , // ? n'arrive pas a récuperer le nom
             color : valeurCouleur,
-            quantity : quantity,
+            quantity : quantity,//probleme quantité
         }
         /*let objPersoKanap = JSON.stringify(persoKanap);
         localStorage.setItem("objKanap", objPersoKanap);*/ //fonction pour enregister dans le localStorage
-        console.log(`canapé personnalisé ajouté au localStorage(id: ${persoKanap.id} | name: ${persoKanap.name} | color: ${persoKanap.color} | quantity: ${persoKanap.quantity})`);
+        console.log(`canapé personnalisé ajouté au localStorage(id: ${persoKanap.id}  | color: ${persoKanap.color} | quantity: ${persoKanap.quantity})`);
         console.log(localStorage);
     } else {
         window.alert ("choississez une couleur de canapé avant de valider")
