@@ -1,16 +1,16 @@
 let source = window.location.href;// source est = à la page la partie localisation du lien
 console.log(source);
-let newURL = new URL(source);//on demande le nouvelle url
+let newURL = new URL(source);// on demande le nouvelle url
 console.log(newURL);
 
-const idKanap = newURL.searchParams.get("id");//on crée une constante pour que le nouvelle url récupere l'ID du produit
+const idKanap = newURL.searchParams.get("id");// on crée une constante pour que le nouvelle url récupere l'ID du produit
 console.log(idKanap);
 
-const requetProduit = fetch ("http://localhost:3000/api/products/" + idKanap );//récupere les information de l'ID en JSON
+const requetProduit = fetch ("http://localhost:3000/api/products/" + idKanap );// récupere les information de l'ID en JSON
 
 console.log(requetProduit);
 
-/*function qui vas afficher chaque element pour l'HTML*/
+/* function qui vas afficher chaque element pour l'HTML*/
 function recupProduit(){
         requetProduit
         .then(function(res) {
@@ -27,7 +27,6 @@ function recupProduit(){
             const error = "Une erreur est survenue" + " " + err;
         return  error;
         });
-
 };
 
 
@@ -58,7 +57,7 @@ let valeurCouleur = "";// variable pour les couleurs qui seront choisi
 const tabColor = document.getElementById("colors");// const pour que l'ID colors soit utiliser
 tabColor.setAttribute("onchange","saveColorLet()");// permet de memoriser la couleur du kanap ajout de onchange en html et de la function savecouleur
 
-//function pour crée un menu déroulant avec les couleurs
+// function pour crée un menu déroulant avec les couleurs
 function appelCouleur(afficheProduit){
     for (let color in afficheProduit.colors){
         console.log(afficheProduit.colors[color]);
@@ -70,16 +69,23 @@ function appelCouleur(afficheProduit){
     };
 };
 
-//fonction qui sélectionne la couleur souhaiter
+// fonction qui sélectionne la couleur souhaiter
 function saveColorLet(){
     const valurOfSelect = document.getElementById("colors").value;
     valeurCouleur = valurOfSelect;
     console.log("vous avez choisi la couleur " + valeurCouleur);
 };
 
-//element attacher a l'id quantity
-let quantity = document.getElementById("quantity").value;
-console.log(quantity);
+let numbreElement = '';// pour récupérer la quantité
+const quanti = document.getElementById("quantity");
+quanti.setAttribute("onchange","saveQuantity()" );
+
+
+function saveQuantity(){
+    const valueQuantity = document.getElementById("quantity").value;
+    numbreElement = valueQuantity;
+    console.log("Vous avez pris " + numbreElement + " articles");
+}
 
 // utilisation de bouton pour ajouté au panier
 const btnAddToPanier = document.getElementById("addToCart");
@@ -92,16 +98,15 @@ function btnAddPanier(){
         let persoKanap = {
             id:  idKanap,
             color : valeurCouleur,
-            quantity : quantity,//probleme quantité
+            quantity : numbreElement,//probleme quantité
         }
-        /*let objPersoKanap = JSON.stringify(persoKanap);
-        localStorage.setItem("objKanap", objPersoKanap);*/ //fonction pour enregister dans le localStorage
+        /* let objPersoKanap = JSON.stringify(persoKanap);
+        localStorage.setItem("objKanap", objPersoKanap);*/ // fonction pour enregister dans le localStorage
         console.log(`canapé personnalisé ajouté au localStorage(id: ${persoKanap.id}  | color: ${persoKanap.color} | quantity: ${persoKanap.quantity})`);
         console.log(localStorage);
     } else {
         window.alert ("choississez une couleur de canapé avant de valider")
     }
-
 }
 
 recupProduit();
