@@ -84,28 +84,31 @@ quanti.setAttribute("onchange","saveQuantity()" );
 function saveQuantity(){
     const valueQuantity = document.getElementById("quantity").value;
     numbreElement = valueQuantity;
-    console.log("Vous avez pris " + numbreElement + " articles");
+    console.log("Vous avez pris " + numbreElement + " article(s)");
 }
 
 // utilisation de bouton pour ajouté au panier
 const btnAddToPanier = document.getElementById("addToCart");
 btnAddToPanier.setAttribute("onclick", "btnAddPanier()");
 
+
+
+
+
 // utilisation du localStorage pour envoyé les élements dans le panier
 function btnAddPanier(){
-    if (valeurCouleur !==""){
-        // ici on enregiste dans le localStorageles info du canapé personnalisé
-        let persoKanap = {
-            id:  idKanap,
-            color : valeurCouleur,
-            quantity : numbreElement,//probleme quantité
-        }
-        /* let objPersoKanap = JSON.stringify(persoKanap);
-        localStorage.setItem("objKanap", objPersoKanap);*/ // fonction pour enregister dans le localStorage
-        console.log(`canapé personnalisé ajouté au localStorage(id: ${persoKanap.id}  | color: ${persoKanap.color} | quantity: ${persoKanap.quantity})`);
-        console.log(localStorage);
-    } else {
-        window.alert ("choississez une couleur de canapé avant de valider")
+    const kanapPerso = (idKanap + " " + valeurCouleur );// constante pour avoir l'ID du produit et sa couleur
+    if ((valeurCouleur !=="") && (numbreElement !== "")){ //si la couleur & la quantité sont valide on peut continué
+            let quantity = JSON.stringify(numbreElement)//variable qui reprendre les élement de la quantité pour préparer aux stockage
+            localStorage.setItem(kanapPerso , quantity) // envoi au localStorage
+            
+
+
+            console.log(`canapé personnalisé ajouté au localStorage(id: ${idKanap}  | color: ${valeurCouleur} | quantity: ${numbreElement})`);
+
+            
+        } else {
+        window.alert ("choississez une couleur de canapé et le nombre d'article(s) avant de valider")
     }
 }
 
