@@ -89,20 +89,20 @@ function saveQuantity(){
 
 // utilisation de bouton pour ajouté au panier
 const btnAddToPanier = document.getElementById("addToCart");
-btnAddToPanier.setAttribute("onclick", "btnAddPanier()");
-
-
-
+btnAddToPanier.setAttribute("onclick", "otherAddPanier()");
 
 
 // utilisation du localStorage pour envoyé les élements dans le panier
-function btnAddPanier(){
+/*function btnAddPanier(){
     const kanapPerso = (idKanap + " " + valeurCouleur );// constante pour avoir l'ID du produit et sa couleur
     if ((valeurCouleur !=="") && (numbreElement !== "")){ //si la couleur & la quantité sont valide on peut continué
-            let quantity = JSON.stringify(numbreElement)//variable qui reprendre les élement de la quantité pour préparer aux stockage
-            localStorage.setItem(kanapPerso , quantity) // envoi au localStorage
-            
-
+            //let quantity = JSON.stringify(numbreElement)//variable qui reprendre les élement de la quantité pour préparer aux stockage
+            localStorage.setItem(kanapPerso , numbreElement) // envoi au localStorage
+            if ( btnAddToPanier.addEventListener("click", function () { //evenement si on augmente la quantité pour un produit
+                let valeur = localStorage.getItem(kanapPerso , numbreElement);
+                let nouvelleValeur = Number(valeur) + Number(numbreElement);
+                localStorage.setItem(kanapPerso,nouvelleValeur)
+            })) 
 
             console.log(`canapé personnalisé ajouté au localStorage(id: ${idKanap}  | color: ${valeurCouleur} | quantity: ${numbreElement})`);
 
@@ -110,6 +110,35 @@ function btnAddPanier(){
         } else {
         window.alert ("choississez une couleur de canapé et le nombre d'article(s) avant de valider")
     }
+}*/
+
+function otherAddPanier() {
+    if ((valeurCouleur !=="") && ((numbreElement !=="" ) && (0 < numbreElement <100 ))){
+            if (numbreElement > 100) {
+                window.alert("quantité trop importante")
+            }
+        let caractKanap = [
+            color = valeurCouleur,
+            quantity = numbreElement ,
+        ]
+        console.log(caractKanap);
+        let colorisation = JSON.stringify(caractKanap)
+        localStorage.setItem(idKanap,colorisation)
+        if ( btnAddToPanier.addEventListener("onclick", function () { 
+
+            let valeur = localStorage.getItem( idKanap,  colorisation);
+            let nouvelleValeur = (valeur + Number(numbreElement))<= 100;
+            caractKanap.quantity = nouvelleValeur;
+            localStorage.setItem(idKanap,caractKanap)
+        })) 
+
+        console.log(`canapé personnalisé ajouté au localStorage(id: ${idKanap}  | color: ${valeurCouleur} | quantity: ${numbreElement})`);
+
+        
+    } else {
+    window.alert ("choississez une couleur de canapé et le nombre d'article(s) avant de valider")
 }
+
+    }
 
 recupProduit();
