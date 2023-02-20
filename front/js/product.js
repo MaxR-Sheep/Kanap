@@ -95,46 +95,46 @@ btnAddToPanier.setAttribute("onclick", "btnAddPanier()");
 // utilisation du localStorage pour envoyé les élements dans le panier
 function btnAddPanier(){
     let parsedCmd = JSON.parse(localStorage.getItem("commande"));
-    let kanap = {id:idKanap, colorWithQuantity : []};
-    let commande = [];
-    let cwq = {color: valeurCouleur, quantity : numbreElement}
-    kanap.colorWithQuantity.push(cwq)
-    commande.push(kanap)
-    
-    if (parsedCmd ){
+    if ((valeurCouleur !=="" && numbreElement !== "") ) {
+        if (numbreElement >=100) {
+            window.alert ("quantité trop importante")
+        }
 
-        
-        parsedCmd.forEach(kanapInStorage => {
-            
-            if (kanapInStorage.id === idKanap) {
-
-                kanapInStorage.colorWithQuantity.forEach( cwqInStorage => {
-
-                    if ( cwqInStorage.color === cwq.color ) {
-                        cwqInStorage.quantity = (parseInt(cwqInStorage.quantity) + parseInt(numbreElement)).toString()
-                        localStorage.setItem("commande", JSON.stringify(parsedCmd))
-                    }else{
-                        kanapInStorage.colorWithQuantity.push(cwq)
-                        console.log(parsedCmd);
-                    }
-            })
+        if (parsedCmd ){
+            if( parsedCmd.hasOwnProperty(idKanap)){
+                if (parsedCmd[idKanap].hasOwnProperty( valeurCouleur )) {
+                    console.log(`${valeurCouleur} est bien choisit pour id ${idKanap}, maintenant il faut augmenter la quantity...`);
+                    parsedCmd[idKanap][valeurCouleur] = (Number(parsedCmd[idKanap][valeurCouleur])+ Number(numbreElement)).toString()
+                    
+                }else{
+                    console.log( `${valeurCouleur} n'est pas présent avec l'id ${ idKanap}, nous l'ajoutons` );
+                    parsedCmd[idKanap] = {... parsedCmd[idKanap], [valeurCouleur]: numbreElement}
+                }
             }else{
-                console.log(idKanap);
-                console.log(parsedCmd);
-                
-                kanap.colorWithQuantity.push(cwq)
-                parsedCmd.push(kanap)
-            }
-        });
-        
-    }else{
+                console.log( `kanap avec id ${idKanap} n'est pas présent, on l'ajoute`);
+                parsedCmd ={
+                        ...parsedCmd, [idKanap]:{
+                            [valeurCouleur] : numbreElement
+                            }
+                        }
+                }
+                localStorage.setItem("commande", JSON.stringify(parsedCmd));
+            }else{
 
-        
-    
-        
-        localStorage.setItem("commande",JSON.stringify(commande))
+                const newCmd = {
+                    [idKanap] : {
+                    [valeurCouleur] : numbreElement
+                    }
+                }
+                localStorage.setItem("commande", JSON.stringify(newCmd));
+                }
+
+    }else {
+        window.alert("slectionner une couleur et quantité pour ajouter un kanap")
     }
-}
+    }
+
+
 
 
 
