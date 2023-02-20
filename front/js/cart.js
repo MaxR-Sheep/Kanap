@@ -1,2 +1,4 @@
-localStorage.getItem("commande")
-console.log(localStorage);
+;
+let completeCmd = localStorage.getItem("commande")
+
+console.log(completeCmd);
