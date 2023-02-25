@@ -5,7 +5,7 @@ function recuperationsProduits() { // fonction pour récuperer les informations 
     requeteAllProduit
     .then(function(res) {
         if (res.ok) {
-            return res.json();
+            return res.json();// retourne la réponse en JSON
         }
     })
     .then (function(value) {// appel un function qui vas afficher les valeurs récupérer 
