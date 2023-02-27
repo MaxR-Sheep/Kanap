@@ -16,6 +16,7 @@ function recuperationsProduits() { // fonction pour récuperer les informations 
     .then (function(value) {// appel une fonction qui vas afficher les valeurs récupérer 
         const afficheProduit = value;
         afficheProduits(panierKanap,afficheProduit)
+        totalProduit()
         console.log(afficheProduit);
     })
     .catch(function(err) {
@@ -38,6 +39,9 @@ function afficheProduits(panierKanap,afficheProduit){// fonction qui vas affiche
 
         let panierAffiche = afficheProduit.find( panier => panier._id === kanap.id ) // recherche si l'id du localstorage et le meme que celui de l'api
         console.log(panierAffiche);
+
+        let totalPrice = 0 ;
+        let totalProduit = 0 ;
 
         sectionItems = document.getElementById("cart__items");
         let newArticle = document.createElement("article");
@@ -71,7 +75,7 @@ function afficheProduits(panierKanap,afficheProduit){// fonction qui vas affiche
         divCartItContent.appendChild(pColor);
 
         let pPrice = document.createElement("p");
-        pPrice.innerText = (panierAffiche.price*cwq.quantity); // on affiche le prix fois la qauntité de kanap choisit
+        pPrice.innerText = (panierAffiche.price*cwq.quantity)+ " €"; // on affiche le prix fois la quantité de kanap choisit
         divCartItContent.appendChild(pPrice);
 
         let divCartItemContent = document.createElement("div");
@@ -107,6 +111,19 @@ function afficheProduits(panierKanap,afficheProduit){// fonction qui vas affiche
 })});
 }
 
+
+function totalProduit(){
+
+    let totalQuantity = document.getElementById("totalQuantity");
+    totalQuantity.getAttribute("itemQuantity");
+    console.log(totalQuantity);
+
+
+
+
+
+    let totalPrice = doxument.getElementById("totalPrice");
+}
 
 
 recuperationsProduits();

@@ -11,7 +11,6 @@ function recuperationsProduits() { // fonction pour récuperer les informations 
     .then (function(value) {// appel un function qui vas afficher les valeurs récupérer 
         const listProduct = value; // notre constante listProduct est égale a une valeur
         afficheProduits(listProduct) // on appel la fonction
-        console.log(listProduct);
     })
     .catch(function(err) { // sinon on appel un fonction erreur pour nous la rapporté
         const error = "Une erreur est survenue" + " " + err;
@@ -22,12 +21,10 @@ function recuperationsProduits() { // fonction pour récuperer les informations 
 console.log(recuperationsProduits);
 recuperationsProduits(); // appel de la fonction
 
-console.log(requeteAllProduit);
 
 function afficheProduits(listProduct){// function qui vas afficher chaque element pour l'HTML
-    listProduct.forEach((product,index) => { // on recherhce pour chque produit ses éléments
-        console.log("numero du produit:" + index + ", nom du produit: " + product.name);
-        
+    listProduct.forEach(product => { // on recherhce pour chque produit ses éléments
+
         sectionItems = document.getElementById("items")// création d'un ID 
 
         let newLien = document.createElement("a"); // création d'une card avec un lien cliquable 

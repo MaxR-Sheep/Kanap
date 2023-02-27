@@ -1,14 +1,10 @@
 let source = window.location.href;// source est = à la page la partie localisation du lien
-console.log(source);
+
 let newURL = new URL(source);// on demande le nouvelle url
-console.log(newURL);
 
 const idKanap = newURL.searchParams.get("id");// on crée une constante pour que le nouvelle url récupere l'ID du produit
-console.log(idKanap);
 
 const requetProduit = fetch ("http://localhost:3000/api/products/" + idKanap );// récupere les information de l'ID en JSON
-
-console.log(requetProduit);
 
 /* function qui vas afficher chaque element pour l'HTML*/
 function recupProduit(){
@@ -21,7 +17,6 @@ function recupProduit(){
         .then(function(kanap){
             const afficheProduit = kanap
             produitKanap(afficheProduit);
-            console.log(afficheProduit);
         })
         .catch(function(err) {
             const error = "Une erreur est survenue" + " " + err;
@@ -32,14 +27,14 @@ function recupProduit(){
 
 /* fonction pour appeller le produit avec son image son prix et description */
 function produitKanap(afficheProduit){  
-    console.log(afficheProduit);
+
 /*  affichage de l'image avec sa source et son alt*/
     let newImage = document.createElement("img");
     newImage.setAttribute("src", afficheProduit.imageUrl);
     newImage.setAttribute("alt", afficheProduit.altTxt);
     const itemImage = document.querySelector(".item__img");
     itemImage.appendChild(newImage);
-    console.log(newImage);
+
 /* affichage du h1 et du nom du canapé*/
     let titreH1 = document.getElementById("title");
     titreH1.innerText = afficheProduit.name;
@@ -60,8 +55,7 @@ tabColor.setAttribute("onchange","saveColorLet()");// permet de memoriser la cou
 // function pour crée un menu déroulant avec les couleurs
 function appelCouleur(afficheProduit){
     for (let color in afficheProduit.colors){
-        console.log(afficheProduit.colors[color]);
-        
+
         let optionColors = document.createElement("option");
         optionColors.innerText = afficheProduit.colors[color];
         optionColors.setAttribute("value", afficheProduit.colors[color] );
@@ -73,7 +67,6 @@ function appelCouleur(afficheProduit){
 function saveColorLet(){
     const valurOfSelect = document.getElementById("colors").value;
     valeurCouleur = valurOfSelect;
-    console.log("vous avez choisi la couleur " + valeurCouleur);
 };
 
 let numbreElement = '';// pour récupérer la quantité
@@ -84,7 +77,6 @@ quanti.setAttribute("onchange","saveQuantity()" );
 function saveQuantity(){
     const valueQuantity = document.getElementById("quantity").value;
     numbreElement = valueQuantity;
-    console.log("Vous avez pris " + numbreElement + " article(s)");
 }
 
 // utilisation de bouton pour ajouté au panier
@@ -137,6 +129,5 @@ function btnAddPanier() {// fonction pour le bonton achat
         }
     }
 }
-
 
 recupProduit();
