@@ -106,7 +106,7 @@ function btnAddPanier() {// fonction pour le bonton achat
                         }
                     }else{
                         const newColorAndQ = {// on utilise une constante avec une nouvelle couleur et une nouvelle quantité
-                            color : valeurCouleur, quantity: numbreElement
+                            color : valeurCouleur, quantity: Number(numbreElement)
                         }
                         searchKanap.colorWithQuantity.push(newColorAndQ)
                     }
@@ -116,7 +116,7 @@ function btnAddPanier() {// fonction pour le bonton achat
                     colorWithQuantity : []
                 }
                 const caq = {
-                    color : valeurCouleur, quantity : numbreElement
+                    color : valeurCouleur, quantity : Number(numbreElement)
                 }
                 newKanap.colorWithQuantity.push(caq);
                 parsedCmd.push(newKanap);
@@ -129,7 +129,7 @@ function btnAddPanier() {// fonction pour le bonton achat
                 colorWithQuantity: []
             }
             const caq = {
-                color : valeurCouleur, quantity : numbreElement
+                color : valeurCouleur, quantity : Number(numbreElement)
             }
             newKanap.colorWithQuantity.push(caq);
             newPanier.push(newKanap)
