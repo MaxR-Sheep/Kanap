@@ -18,7 +18,7 @@ function recuperationsProduits() { // fonction pour récuperer les informations 
     });
     
 }
-console.log(recuperationsProduits);
+
 recuperationsProduits(); // appel de la fonction
 
 
