@@ -107,12 +107,13 @@ function btnAddPanier() {// fonction pour le bonton achat
                     id: idKanap,
                     colorWithQuantity : []
                 }
-                const caq = {
+                const cwq = {
                     color : valeurCouleur, quantity : Number(numbreElement)
                 }
-                newKanap.colorWithQuantity.push(caq);
+                newKanap.colorWithQuantity.push(cwq);
                 parsedCmd.push(newKanap);
             }
+        alert ( "Articles ajouter au panier")
         localStorage.setItem("Panier", JSON.stringify(parsedCmd));//on ajoute au localstorage
         }else{  // si le kanap n'a pas d'id dans le local storage on crée un nouveau tableau 
             const newPanier = [] 
@@ -120,11 +121,12 @@ function btnAddPanier() {// fonction pour le bonton achat
                 id: idKanap,
                 colorWithQuantity: []
             }
-            const caq = {
+            const cwq = {
                 color : valeurCouleur, quantity : Number(numbreElement)
             }
-            newKanap.colorWithQuantity.push(caq);
+            newKanap.colorWithQuantity.push(cwq);
             newPanier.push(newKanap)
+            alert ( "Articles ajouter au panier")
             localStorage.setItem("Panier", JSON.stringify(newPanier))
         }
     }

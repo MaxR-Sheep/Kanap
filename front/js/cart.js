@@ -1,5 +1,4 @@
 let panierKanap = JSON.parse(localStorage.getItem("Panier")) // récuperation du localStorage
-let apiKanap = [];
 
 class CustomKanap {
 constructor(
@@ -22,66 +21,52 @@ constructor(
 }
 
 let totalPrice = 0 ;
-let totalProduit = 0 ;
+let totalProduits = 0 ;
 
-function recupKanap(){// 
+sectionItems = document.getElementById("cart__items");
+
+/**********************************fonction pour création d'une class kanap avec les element du LS et de l'API********************* */
+
+function recupKanap(){//
+
+        if (panierKanap=== null || panierKanap == 0) {
+                const emptyPanier =`<p> Votre panier est vide!<p>`;
+                sectionItems.innerHTML = emptyPanier
+        }
         panierKanap.forEach(kanap => { // pour chaque kanap dans le localStorage
         fetch(`http://localhost:3000/api/products/${kanap.id}`)
         .then(function(res) {
                 if (res.ok) { //si la reponse est ok
                 return res.json();
                 }})
-            .then(data => {  // je récupere le résultat de la promesse 
-                kanap.colorWithQuantity.forEach((cwq) =>{
-                const newKanap = new CustomKanap()
-                newKanap.id = kanap.id;
-                newKanap.img = data.imageUrl;
-                newKanap.altTxt = data.altTxt;
-                newKanap.name = data.name;
-                newKanap.color = cwq.color;
-                newKanap.price = data.price;
-                newKanap.quantity = cwq.quantity;
-                
+                .then(data => {  // je récupere le résultat de la promesse 
+                        kanap.colorWithQuantity.forEach((cwq) =>{
+                        const newKanap = new CustomKanap()
+                        newKanap.id = kanap.id;
+                        newKanap.img = data.imageUrl;
+                        newKanap.altTxt = data.altTxt;
+                        newKanap.name = data.name;
+                        newKanap.color = cwq.color;
+                        newKanap.price = data.price;
+                        newKanap.quantity = cwq.quantity;
                 createHTMLArticle(newKanap);
-                
-
-                totalPrice = totalPrice + data.price *cwq.quantity ;
-                totalProduit = totalProduit + cwq.quantity;
-                totalPA(totalProduit,totalPrice);
-                
-                })
-
-        }
+                totalPrice +=   data.price *cwq.quantity ;
+                })}
         )
-        
         .catch(function(err) {
                 const error = "Une erreur est survenue" + " " + err;
                 return  error;
                 })
                 
-})
-
-console.log(apiKanap);
-;}
-
-
-
-recupKanap();
-
-function totalPA(){ // function calcule les totaux
-        totalQuantity = document.getElementById("totalQuantity")
-        totalQuantity.innerText = totalProduit;
-
-        let totalPriceKanap = document.getElementById("totalPrice")
-        totalPriceKanap.innerText = totalPrice;
+        })
 }
 
 
+/******************************************************************création html************************************************** */
 function createHTMLArticle(kanap) {
 
 /* Création de l'article avec des attribut data id et color*/
 
-        sectionItems = document.getElementById("cart__items");
         let newArticle = document.createElement("article");
         newArticle.setAttribute("data-id",kanap.id);
         newArticle.setAttribute("data-color",kanap.color);
@@ -158,9 +143,11 @@ function createHTMLArticle(kanap) {
         inputQuantity.setAttribute("min","1");
         inputQuantity.setAttribute("max","100");
         inputQuantity.setAttribute("value",kanap.quantity);
-        inputQuantity.setAttribute("onchange","changeQuantity(this.parentElement)")
-        divCIQuantity.appendChild(inputQuantity);
         
+        divCIQuantity.appendChild(inputQuantity);
+        inputQuantity.addEventListener("change", changeQuantity)
+        
+
 
 /* Div pour la suppresion*/
 
@@ -170,41 +157,182 @@ function createHTMLArticle(kanap) {
 
 /*Texte de suppresion*/
 
-        let pDelete = document.createElement("p");
-        pDelete.setAttribute("class","deleteItem");
-        pDelete.setAttribute("onclick", "majKanap(this.parentElement)")
-        pDelete.innerText = "Supprimer";
-        divDelete.appendChild(pDelete);
+        let itemDelete = document.createElement("p");
+        itemDelete.setAttribute("class","deleteItem");
+        itemDelete.addEventListener("click", deleteProduit, false);
+        itemDelete.innerHTML = "Supprimer";
+        divDelete.appendChild(itemDelete);
 
-        
+        getTotalQuantity();
 
+}
+/***************************************************fonction******************************************************** */
+
+function changeQuantity(event){
+
+        let parentElement = event.currentTarget.parentElement
+        let kanapId = parentElement.closest("article").dataset.id;
+        let colorKanap = parentElement.closest("article").dataset.color;
+
+        getTotalQuantity();
+}
+
+// function refreshHTML(){
+//         cleanPage(); 
+//         recupKanap();
+// }
+
+function getTotalQuantity(){
+        totalProduits = 0;
         
-        
+        let listOfInputs = document.getElementsByClassName("itemQuantity");
+        let totalPriceKanap = document.getElementById("totalPrice")
+        let totalQuantity = document.getElementById("totalQuantity")
+        for (i = 0; i < listOfInputs.length; i++){
+                
+                totalProduits = totalProduits + Number(listOfInputs[i].value);
+                totalQuantity.innerText = totalProduits;
+                
+                
+        }
+        totalPriceKanap.innerHTML = totalPrice;
 }
 
 
-function changeQuantity(parentElement){
-        const kanapId = parentElement.closest("article").dataset.id;
-        const colorKanap = parentElement.closest("article").dataset.color;
+/************************************************************fonction delete***************************************************** */
+function deleteProduit (event){
+
+        let parentElement = event.currentTarget.parentElement
+        let kanapId = parentElement.closest("article").dataset.id;
+        let colorKanap = parentElement.closest("article").dataset.color;
+        const searchedKanap = panierKanap.find(kanap => kanap.id === kanapId);
+        const searchedColorWithQuantity = searchedKanap.colorWithQuantity.find(cwq => cwq.color === colorKanap); // {color: "blue", quantity:4}
+        const colorWithQuantityUpdated = searchedKanap.colorWithQuantity.filter(cwq => cwq.color !== searchedColorWithQuantity.color);
+        searchedKanap.colorWithQuantity = colorWithQuantityUpdated;
+        if(Array.from(searchedKanap.colorWithQuantity).length === 0){
+                const updatedOrder = panierKanap.filter(kanap => kanap.id !== searchedKanap.id);
+                localStorage.setItem("Panier", JSON.stringify(updatedOrder));
+                
+                if (localStorage === undefined) {
+                        
+                        localStorage.clear()
+                }
+        }else{
+                localStorage.setItem("Panier", JSON.stringify(panierKanap));
+        }
+        location.reload();
+//        refreshHTML();
+}
+/************************************************lancement des fonctions**************************************************** */
+async function loadPage(){
+        recupKanap();
+        getTotalQuantity();
+}
+loadPage();
+
+/**********************************************************partie formulaire********************************************** */
+
+let nameRegex = new RegExp ("^[a-zA-Z ,.'-]+$"); // utilisation expresion régulieres pour les noms de a-z maj ou min avec certaine expection 
+let emailRegex = new RegExp ("^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$");// obligation d'avoir le @ utilisation des chiffres et lettres
+let addressRegex = new RegExp ("^([0-9]*) ?([a-zA-Z,\. ]*)$"); //réitération de lettres limité
+
+function validationFormulair() {
+
+        let form = document.querySelector (".cart__order__form");
+
+        //On écoute les modifs du formulaire
+
+        form.firstName.addEventListener('change',function() 
+        {
+        validFirstName(this);
+        });
+
+        form.lastName.addEventListener('change', function () 
+        {
+        validLastName(this);
+        });
+
+        form.address.addEventListener('change', function () 
+        {
+        validAddress(this);
+        });
+
+        form.city.addEventListener('change', function () 
+        {
+        validCity(this);
+        });
+
+        form.email.addEventListener('change', function () 
+        {
+        validEmail(this);
+});
+
+//On test les entrées du formulaire pour quel soit conforme sinon message d'erreur
 
 
-        console.log(colorKanap);
+const validFirstName = function(inputFirstName)
+{
+
+        let firstNameErrorMsg = inputFirstName.nextElementSibling;
+
+        if (nameRegex.test(inputFirstName.value)){
+        firstNameErrorMsg.innerHTML = '';
+        }   else 
+        {
+        firstNameErrorMsg.innerHTML = "Saisie invalide.Veuillez réessayer."
+        }
+};
+
+const validLastName = function (inputLastName) 
+{
+        let lastNameErrorMsg = inputLastName.nextElementSibling;
+
+        if (nameRegex.test(inputLastName.value)) 
+        {
+        lastNameErrorMsg.innerHTML = '';
+        } else 
+        {
+        lastNameErrorMsg.innerHTML = 'Saisie invalide.Veuillez réessayer.';
+        }
+};
+
+const validAddress = function (inputAddress) 
+{
+        let addressErrorMsg = inputAddress.nextElementSibling;
+
+        if (addressRegex.test(inputAddress.value)) 
+        {
+        addressErrorMsg.innerHTML = '';
+        } else 
+        {
+        addressErrorMsg.innerHTML = 'Saisie invalide.Veuillez réessayer.';
+        }
+};
+
+const validCity = function (inputCity) {
+        let cityErrorMsg = inputCity.nextElementSibling;
+
+        if (nameRegex.test(inputCity.value)) 
+        {
+        cityErrorMsg.innerHTML = '';
+        } else 
+        {
+        cityErrorMsg.innerHTML = 'Saisie invalide.Veuillez réessayer.';
+        }
+};
+
+const validEmail = function (inputEmail) 
+{
+        let emailErrorMsg = inputEmail.nextElementSibling;
+
+        if (emailRegex.test(inputEmail.value)) 
+        {
+        emailErrorMsg.innerHTML = '';
+        } else 
+        {
+        emailErrorMsg.innerHTML = 'Saisie invalide.Veuillez réessayer.';
+        }
+};
 
 }
-
-function majKanap(parentElement) {
-        const kanapId = parentElement.closest("article").dataset.id;
-        const colorKanap = parentElement.closest("article").dataset.color;
-        console.log(colorKanap);
-        const searchKanap = panierKanap.find(kanapInStorage => kanapInStorage.id === kanapId);
-        searchKanap.colorWithQuantity.filter(cwq => cwq.color !== colorKanap);
-        console.log(searchKanap);
-        localStorage.setItem("Panier",JSON.stringify(panierKanap));
-
-
-        
-        
-        
-
-}
-
+validationFormulair() 
