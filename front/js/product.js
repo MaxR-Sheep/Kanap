@@ -71,22 +71,24 @@ function saveColorLet(){
 
 let numbreElement = '';// pour récupérer la quantité
 const quanti = document.getElementById("quantity");
-quanti.setAttribute("onchange","saveQuantity()" );
+quanti.addEventListener("change",saveQuantity, false );
 
 
 function saveQuantity(){
     const valueQuantity = document.getElementById("quantity").value;
-    numbreElement = valueQuantity;
+
+    numbreElement = Number(valueQuantity);
+
 }
 
 // utilisation de bouton pour ajouté au panier
 const btnAddToPanier = document.getElementById("addToCart");
-btnAddToPanier.setAttribute("onclick", "btnAddPanier()");
+btnAddToPanier.addEventListener("click", btnAddPanier, false);
 
 
 function btnAddPanier() {// fonction pour le bonton achat
     let parsedCmd = JSON.parse(localStorage.getItem("Panier")); // appele le localstorage 
-        if ((valeurCouleur !=="" && numbreElement >= 0 && numbreElement < 100)){ // si la couleur et la quantité son bien sélectionner
+        if ((valeurCouleur !=="" && numbreElement > 0 && numbreElement < 100)){ // si la couleur et la quantité son bien sélectionner
             if (parsedCmd ){ // si dans le local storage il y a bien quelque chose
                 const searchKanap = parsedCmd.find(kanapInStorage => kanapInStorage.id === idKanap); // constante qui va rechercher si on a un kanap avec le meme ID
                 if (searchKanap) { // si on utilise la constante searchkanap

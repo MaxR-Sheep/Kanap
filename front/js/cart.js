@@ -1,4 +1,8 @@
-let panierKanap = JSON.parse(localStorage.getItem("Panier")) // récuperation du localStorage
+let panierKanap =  JSON.parse(localStorage.getItem("Panier"))
+
+function refreshVarPanier(){
+        panierKanap = JSON.parse(localStorage.getItem("Panier")) // récuperation du localStorage
+}
 
 class CustomKanap {
 constructor(
@@ -28,8 +32,8 @@ sectionItems = document.getElementById("cart__items");
 /**********************************fonction pour création d'une class kanap avec les element du LS et de l'API********************* */
 
 function recupKanap(){//
-
-        if (panierKanap=== null || panierKanap == 0) {
+        
+                if (panierKanap === null || panierKanap.length === 0) {
                 const emptyPanier =`<p> Votre panier est vide!<p>`;
                 sectionItems.innerHTML = emptyPanier
         }
@@ -51,6 +55,7 @@ function recupKanap(){//
                         newKanap.quantity = cwq.quantity;
                 createHTMLArticle(newKanap);
                 totalPrice +=   data.price *cwq.quantity ;
+                getTotalPrice();
                 })}
         )
         .catch(function(err) {
@@ -145,7 +150,7 @@ function createHTMLArticle(kanap) {
         inputQuantity.setAttribute("value",kanap.quantity);
         
         divCIQuantity.appendChild(inputQuantity);
-        inputQuantity.addEventListener("change", changeQuantity)
+        inputQuantity.addEventListener("change", changeQuantity, false)
         
 
 
@@ -164,39 +169,93 @@ function createHTMLArticle(kanap) {
         divDelete.appendChild(itemDelete);
 
         getTotalQuantity();
+        
 
 }
-/***************************************************fonction******************************************************** */
+/***************************************************fonction changement quantité et prix total******************************************************** */
 
+let unitPrice = 0;
 function changeQuantity(event){
-
         let parentElement = event.currentTarget.parentElement
         let kanapId = parentElement.closest("article").dataset.id;
         let colorKanap = parentElement.closest("article").dataset.color;
-
+        const searchKanapId = panierKanap.find( idStorage => idStorage.id === kanapId)
+        if (searchKanapId) {
+                const searchColor = searchKanapId.colorWithQuantity.find( caq => caq.color === colorKanap)
+                if (searchColor) {
+                        searchColor.quantity = Number(event.target.value)
+                        getBasePrice(kanapId).then((fetchedPrice) => unitPrice = searchColor.quantity * fetchedPrice).then(() => refreshContent(parentElement)); //refresh unit price
+                        
+                        localStorage.setItem("Panier",JSON.stringify(panierKanap))
+                }
+        }
+        getAllUnitPrice();
         getTotalQuantity();
 }
 
-// function refreshHTML(){
-//         cleanPage(); 
-//         recupKanap();
-// }
+async function getBasePrice(kanapId){ // on récupere le prix unitaire pour chaque kanap
+        let price = 0;
+        await fetch(`http://localhost:3000/api/products/${kanapId}`)
+        .then(function(res) {
+                if (res.ok) { //si la reponse est ok
+                return res.json();
+                }})
+                .then(data => {  // je récupere le résultat de la promesse 
+                        price = data.price
+                })        
+        .catch(function(err) {
+                const error = "Une erreur est survenue" + " " + err;
+                return  error;
+                })
+        return price;
+        }
+
+function refreshContent(parentElement){ // le prix se modifit en actualisant le prix seulement
+        let divCartItemContent = parentElement.closest(".cart__item__content");    
+        let divDescription = divCartItemContent.children[0];
+        divDescription.children[2].innerHTML = `${unitPrice} €`;
+        
+}
 
 function getTotalQuantity(){
         totalProduits = 0;
-        
         let listOfInputs = document.getElementsByClassName("itemQuantity");
-        let totalPriceKanap = document.getElementById("totalPrice")
         let totalQuantity = document.getElementById("totalQuantity")
-        for (i = 0; i < listOfInputs.length; i++){
-                
-                totalProduits = totalProduits + Number(listOfInputs[i].value);
+        if(listOfInputs.length ===0){
+                totalProduits = 0;
                 totalQuantity.innerText = totalProduits;
-                
+        }else{
+                for (i = 0; i < listOfInputs.length; i++){
+                        totalProduits += Number(listOfInputs[i].value);
+                        totalQuantity.innerText = totalProduits;
+                }
+        }
+        
+}
+
+function getTotalPrice() {
+        let totalKanapPrice = document.getElementById("totalPrice");
+        totalKanapPrice.innerHTML= totalPrice
+        
+}
+
+function getAllUnitPrice() {
+        let allCartItem = document.querySelectorAll(".cart__item__content")
+        let newTotalPrice = 0;
+        for ( const divDescription of allCartItem){
+                let divContent = divDescription.children[0];
+                let pUnitPrice = divContent.children[2].textContent;
+                let pCleanPrice = pUnitPrice.substring(0,pUnitPrice.indexOf(" €")) // on sépare les different element du paragraphe
+                newTotalPrice += Number(pCleanPrice)
                 
         }
-        totalPriceKanap.innerHTML = totalPrice;
+        totalPrice = newTotalPrice;
+        getTotalPrice();
 }
+
+
+
+
 
 
 /************************************************************fonction delete***************************************************** */
@@ -205,23 +264,24 @@ function deleteProduit (event){
         let parentElement = event.currentTarget.parentElement
         let kanapId = parentElement.closest("article").dataset.id;
         let colorKanap = parentElement.closest("article").dataset.color;
-        const searchedKanap = panierKanap.find(kanap => kanap.id === kanapId);
-        const searchedColorWithQuantity = searchedKanap.colorWithQuantity.find(cwq => cwq.color === colorKanap); // {color: "blue", quantity:4}
-        const colorWithQuantityUpdated = searchedKanap.colorWithQuantity.filter(cwq => cwq.color !== searchedColorWithQuantity.color);
+        let searchedKanap = panierKanap.find(kanap => kanap.id === kanapId);
+        let searchedColorWithQuantity = searchedKanap.colorWithQuantity.find(cwq => cwq.color === colorKanap); // {color: "blue", quantity:4}
+        
+        let colorWithQuantityUpdated = searchedKanap.colorWithQuantity.filter(cwq => cwq.color !== searchedColorWithQuantity.color);
         searchedKanap.colorWithQuantity = colorWithQuantityUpdated;
-        if(Array.from(searchedKanap.colorWithQuantity).length === 0){
-                const updatedOrder = panierKanap.filter(kanap => kanap.id !== searchedKanap.id);
+        
+        if(searchedKanap.colorWithQuantity.length === 0){
+                let updatedOrder = panierKanap.filter(kanap => kanap.id !== kanapId);
                 localStorage.setItem("Panier", JSON.stringify(updatedOrder));
-                
-                if (localStorage === undefined) {
-                        
-                        localStorage.clear()
-                }
+                refreshVarPanier()//rafraichir la variable car pas de reload page, sinon état précédent conservé
         }else{
                 localStorage.setItem("Panier", JSON.stringify(panierKanap));
+                refreshVarPanier();
         }
-        location.reload();
-//        refreshHTML();
+        parentElement.closest("article").remove();
+        getTotalQuantity();
+        
+
 }
 /************************************************lancement des fonctions**************************************************** */
 async function loadPage(){
@@ -242,30 +302,25 @@ function validationFormulair() {
 
         //On écoute les modifs du formulaire
 
-        form.firstName.addEventListener('change',function() 
-        {
+        form.firstName.addEventListener('change',function(){
         validFirstName(this);
         });
 
-        form.lastName.addEventListener('change', function () 
-        {
+        form.lastName.addEventListener('change', function (){
         validLastName(this);
         });
 
-        form.address.addEventListener('change', function () 
-        {
+        form.address.addEventListener('change', function (){
         validAddress(this);
         });
 
-        form.city.addEventListener('change', function () 
-        {
+        form.city.addEventListener('change', function (){
         validCity(this);
         });
 
-        form.email.addEventListener('change', function () 
-        {
+        form.email.addEventListener('change', function (){
         validEmail(this);
-});
+        });
 
 //On test les entrées du formulaire pour quel soit conforme sinon message d'erreur
 
@@ -336,3 +391,57 @@ const validEmail = function (inputEmail)
 
 }
 validationFormulair() 
+
+/*****************************************************envoi de la commande avec les informations du formulaire une fois vérifier********************************** */
+
+function envoiCommand() {
+        
+        const order = document.getElementById("order");
+        order.addEventListener("click", (event)=>{
+
+                // on récupere les infos du client
+                let inputName = document.getElementById("firstName");
+                let inputLastName = document.getElementById("lastName");
+                let inputAddress = document.getElementById("address");
+                let inputCity = document.getElementById("city");
+                let inputEmail = document.getElementById("email");
+
+        // on crée un array avec les element du LocalStorage
+        let kanaps = [];
+        for (let i = 0; i < panierKanap.length; i++){
+                kanap.push(panierKanap[i].id)
+        }
+
+        const order = {
+                contact :{
+                        firstName: inputName.value,
+                        lastName: inputLastName.value,
+                        address: inputAddress.value,
+                        city: inputCity.value,
+                        email: inputEmail.value,
+                },
+                products: kanaps,
+        }
+
+        // envoi de order (contact + products) au serveur
+
+        const commande = {
+                method: 'POST',
+                headres:{
+                        "content-type": "application/json"
+                },
+                body: JSON.stringify(order)
+        };
+
+        //Et ensuite on redirige l'utilisateur vers la page confirmation
+
+        fetch("http://localhost:3000/api/products/order", options)
+        .then((response) => response.json())
+        .then((data) => 
+        {
+        localStorage.clear();
+        localStorage.setItem("orderId", data.orderId);
+        document.location.href = "confirmation.html";
+        })
+        })
+}
