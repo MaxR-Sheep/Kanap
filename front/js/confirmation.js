@@ -1,10 +1,13 @@
-// On affiche le numéro de commande.Il n'est pas stocké
+let newURL = new URL(window.location.href);// on demande le nouvelle url
+
+const orderId = newURL.searchParams.get("order")
+
 
 function confirmation()
 {
     const idItem = document.getElementById("orderId");
-    idItem.innerText = localStorage.getItem("orderId");
-    localStorage.clear();
+    idItem.innerText = orderId;
+
 }
 
 confirmation();
