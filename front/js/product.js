@@ -24,7 +24,6 @@ function recupProduit(){
         });
 };
 
-
 /* fonction pour appeller le produit avec son image son prix et description */
 function produitKanap(afficheProduit){  
 
@@ -76,18 +75,25 @@ quanti.addEventListener("change",saveQuantity, false );
 
 function saveQuantity(){
     const valueQuantity = document.getElementById("quantity").value;
-
     numbreElement = Number(valueQuantity);
-
 }
 
 // utilisation de bouton pour ajouté au panier
 const btnAddToPanier = document.getElementById("addToCart");
 btnAddToPanier.addEventListener("click", btnAddPanier, false);
 
+function goodQuantity(numbreElement) { // paramettre pour que la quantié choisit soit la bonne
+    if (numbreElement <= 0 ){
+        alert ("veuillez choisir une quantité entre 1 et 100")
+    }else if ( numbreElement > 100) {
+        alert ("veuillez choisir une quantité entre 1 et 100")
+    }
+}
+
 
 function btnAddPanier() {// fonction pour le bonton achat
-    let parsedCmd = JSON.parse(localStorage.getItem("Panier")); // appele le localstorage 
+    goodQuantity(numbreElement);
+    let parsedCmd = JSON.parse(localStorage.getItem("Panier")); // appel le localstorage
         if ((valeurCouleur !=="" && numbreElement > 0 && numbreElement < 100)){ // si la couleur et la quantité son bien sélectionner
             if (parsedCmd ){ // si dans le local storage il y a bien quelque chose
                 const searchKanap = parsedCmd.find(kanapInStorage => kanapInStorage.id === idKanap); // constante qui va rechercher si on a un kanap avec le meme ID
@@ -95,7 +101,7 @@ function btnAddPanier() {// fonction pour le bonton achat
                     const searchColor = searchKanap.colorWithQuantity.find( caq => caq.color === valeurCouleur); // on utilise une constante qui va verifier si c'est la même couleur
                     if (searchColor) { // si on utilise la constante search color
                         searchColor.quantity = Number(searchColor.quantity)+ Number(numbreElement) ; // alors on aditionne la quantité
-                        if (searchColor.quantity >= 100) { // si la quantité des article pour le localstorage dépasse 100
+                        if (searchColor.quantity > 100) { // si la quantité des article pour le localstorage dépasse 100
                             alert ("Quantité trop importante") // alert car quantité trop importante
                         }
                     }else{

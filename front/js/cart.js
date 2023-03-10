@@ -23,7 +23,7 @@ constructor(
 let totalKanapPrice = document.getElementById("totalPrice");
 let totalProduits = 0 ;
 let totalPrice = 0 ;
-sectionItems = document.getElementById("cart__items");
+let sectionItems = document.getElementById("cart__items");
 
 /**********************************fonction pour création d'une class kanap avec les element du LS et de l'API********************* */
 
@@ -57,13 +57,11 @@ function recupKanap(){
                 totalPrice += data.price *cwq.quantity ;
                 totalKanapPrice.innerHTML= totalPrice;
                 })
-        }
-        )
+        })
         .catch(function(err) {
                 const error = "Une erreur est survenue" + " " + err;
                 return  error;
                 })
-                
         })}
 }
 
@@ -119,7 +117,6 @@ function createHTMLArticle(kanap) {
 /*texte quantité*/
 
         let pPrice = document.createElement("p");
-        
         pPrice.innerHTML = (kanap.price*kanap.quantity)+ " €"; // on affiche le prix fois la quantité de kanap choisit
         divCartItContent.appendChild(pPrice);
 
@@ -153,8 +150,6 @@ function createHTMLArticle(kanap) {
         
         divCIQuantity.appendChild(inputQuantity);
         inputQuantity.addEventListener("change", changeQuantity, false)
-        
-
 
 /* Div pour la suppresion*/
 
@@ -171,9 +166,8 @@ function createHTMLArticle(kanap) {
         divDelete.appendChild(itemDelete);
 
         getTotalQuantity();
-        
-
 }
+
 /***************************************************fonction changement quantité et prix total******************************************************** */
 
 let unitPrice = 0;
@@ -234,11 +228,6 @@ function getAllUnitPrice() { // récuperation pour que le prix total s'additionn
         }
         totalKanapPrice.innerHTML= newTotalPrice
 }
-
-
-
-
-
 
 /************************************************************fonction delete***************************************************** */
 
