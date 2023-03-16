@@ -24,6 +24,8 @@ function recupProduit(){
         });
 };
 
+/**********************************création du DOM HTML*********************************************** */
+
 /* fonction pour appeller le produit avec son image son prix et description */
 function produitKanap(afficheProduit){  
 
@@ -47,6 +49,8 @@ function produitKanap(afficheProduit){
     appelCouleur(afficheProduit);
 };
 
+/*************************************************************récuperation couleur et quantité*************************** */
+
 let valeurCouleur = "";// variable pour les couleurs qui seront choisi
 const tabColor = document.getElementById("colors");// const pour que l'ID colors soit utiliser
 tabColor.setAttribute("onchange","saveColorLet()");// permet de memoriser la couleur du kanap ajout de onchange en html et de la function savecouleur
@@ -54,7 +58,6 @@ tabColor.setAttribute("onchange","saveColorLet()");// permet de memoriser la cou
 // function pour crée un menu déroulant avec les couleurs
 function appelCouleur(afficheProduit){
     for (let color in afficheProduit.colors){
-
         let optionColors = document.createElement("option");
         optionColors.innerText = afficheProduit.colors[color];
         optionColors.setAttribute("value", afficheProduit.colors[color] );
@@ -90,8 +93,21 @@ function goodQuantity(numbreElement) { // paramettre pour que la quantié choisi
     }
 }
 
+function  goodColor (valeurCouleur){ // fonction pour alerter s'il manque la couleur
+    if (valeurCouleur === "") {
+        alert ("Veuillez choisir une couleur")
+    }
+}
+
+function ajoutLS (parsedCmd){
+    alert ( "Articles ajouter au panier")
+    localStorage.setItem("Panier", JSON.stringify(parsedCmd));//on ajoute au localstorage
+}
+
+/*********************************utilisation bouton ajout au panier************************************* */
 
 function btnAddPanier() {// fonction pour le bonton achat
+    goodColor (valeurCouleur);
     goodQuantity(numbreElement);
     let parsedCmd = JSON.parse(localStorage.getItem("Panier")); // appel le localstorage
         if ((valeurCouleur !=="" && numbreElement > 0 && numbreElement < 100)){ // si la couleur et la quantité son bien sélectionner
@@ -103,12 +119,15 @@ function btnAddPanier() {// fonction pour le bonton achat
                         searchColor.quantity = Number(searchColor.quantity)+ Number(numbreElement) ; // alors on aditionne la quantité
                         if (searchColor.quantity > 100) { // si la quantité des article pour le localstorage dépasse 100
                             alert ("Quantité trop importante") // alert car quantité trop importante
+                        }else{
+                            ajoutLS(parsedCmd)
                         }
                     }else{
                         const newColorAndQ = {// on utilise une constante avec une nouvelle couleur et une nouvelle quantité
                             color : valeurCouleur, quantity: Number(numbreElement)
                         }
                         searchKanap.colorWithQuantity.push(newColorAndQ)
+                        ajoutLS(parsedCmd)
                     }
             }else{
                 const newKanap = {
@@ -120,9 +139,8 @@ function btnAddPanier() {// fonction pour le bonton achat
                 }
                 newKanap.colorWithQuantity.push(cwq);
                 parsedCmd.push(newKanap);
+                ajoutLS(parsedCmd);
             }
-        alert ( "Articles ajouter au panier")
-        localStorage.setItem("Panier", JSON.stringify(parsedCmd));//on ajoute au localstorage
         }else{  // si le kanap n'a pas d'id dans le local storage on crée un nouveau tableau 
             const newPanier = [] 
             const newKanap = {
@@ -133,9 +151,8 @@ function btnAddPanier() {// fonction pour le bonton achat
                 color : valeurCouleur, quantity : Number(numbreElement)
             }
             newKanap.colorWithQuantity.push(cwq);
-            newPanier.push(newKanap)
-            alert ( "Articles ajouter au panier")
-            localStorage.setItem("Panier", JSON.stringify(newPanier))
+            newPanier.push(newKanap);
+            ajoutLS(newPanier);
         }
     }
 }
