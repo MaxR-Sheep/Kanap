@@ -1,5 +1,4 @@
-const requeteAllProduit =  fetch("http://localhost:3000/api/products");
- // récuperer la réponse en JSON
+const requeteAllProduit =  fetch("http://localhost:3000/api/products");// récuperer la réponse en JSON
 
 function recuperationsProduits() { // fonction pour récuperer les informations en JSON
     requeteAllProduit
@@ -21,6 +20,7 @@ function recuperationsProduits() { // fonction pour récuperer les informations 
 
 recuperationsProduits(); // appel de la fonction
 
+/************************************affichage des elements HTML********************************************** */
 
 function afficheProduits(listProduct){// function qui vas afficher chaque element pour l'HTML
     listProduct.forEach(product => { // on recherhce pour chque produit ses éléments

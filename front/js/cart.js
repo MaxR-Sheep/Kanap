@@ -147,7 +147,7 @@ function createHTMLArticle(kanap) {
         inputQuantity.setAttribute("min","1");
         inputQuantity.setAttribute("max","100");
         inputQuantity.setAttribute("value",kanap.quantity);
-        
+
         divCIQuantity.appendChild(inputQuantity);
         inputQuantity.addEventListener("change", changeQuantity, false)
 
@@ -204,6 +204,7 @@ function getTotalQuantity(){ // fonction pour que le changement soit visible sur
         totalProduits = 0;
         let listOfInputs = document.getElementsByClassName("itemQuantity");
         let totalQuantity = document.getElementById("totalQuantity")
+
         if(listOfInputs.length ===0){
                 totalProduits = 0;
                 totalQuantity.innerText = totalProduits;
@@ -213,9 +214,7 @@ function getTotalQuantity(){ // fonction pour que le changement soit visible sur
                         totalQuantity.innerText = totalProduits;
                 }
         }
-        
 }
-
 
 function getAllUnitPrice() { // récuperation pour que le prix total s'additionne 
         let allCartItem = document.querySelectorAll(".cart__item__content")
@@ -235,7 +234,6 @@ function refreshVarPanier(){
         panierKanap = JSON.parse(localStorage.getItem("Panier")) // récuperation du localStorage
 }
 
-
 function deleteProduit (event){
 
         let parentElement = event.currentTarget.parentElement
@@ -243,10 +241,9 @@ function deleteProduit (event){
         let colorKanap = parentElement.closest("article").dataset.color;
         let searchedKanap = panierKanap.find(kanap => kanap.id === kanapId);
         let searchedColorWithQuantity = searchedKanap.colorWithQuantity.find(cwq => cwq.color === colorKanap); // {color: "blue", quantity:4}
-        
         let colorWithQuantityUpdated = searchedKanap.colorWithQuantity.filter(cwq => cwq.color !== searchedColorWithQuantity.color);
         searchedKanap.colorWithQuantity = colorWithQuantityUpdated;
-        
+
         if(searchedKanap.colorWithQuantity.length === 0){
                 let updatedOrder = panierKanap.filter(kanap => kanap.id !== kanapId);
                 localStorage.setItem("Panier", JSON.stringify(updatedOrder));
@@ -267,7 +264,7 @@ function deleteProduit (event){
 
 /**********************************************************partie formulaire********************************************** */
 
-let nameRegex = new RegExp ("^[a-zA-Z ,.'-]+$"); // utilisation expresion régulieres pour les noms de a-z maj ou min avec certaine expection 
+let nameRegex = new RegExp ("^[a-zA-Z ,.'-]+$"); // utilisation expression régulieres pour les noms de a-z maj ou min avec certaine expection 
 let emailRegex = new RegExp ("^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$");// obligation d'avoir le @ utilisation des chiffres et lettres
 let addressRegex = new RegExp ("^([0-9]*) ?([a-zA-Z,\. ]*)$"); //réitération de lettres limité
 
@@ -299,22 +296,16 @@ function validationFormulair() {
 
 //On test les entrées du formulaire pour quel soit conforme sinon message d'erreur
 
-
-const validFirstName = function(inputFirstName)
-{
-
+const validFirstName = function(inputFirstName){
         let firstNameErrorMsg = inputFirstName.nextElementSibling;
-
         if (nameRegex.test(inputFirstName.value)){
         firstNameErrorMsg.innerHTML = '';
-        }   else 
-        {
+        }else {
         firstNameErrorMsg.innerHTML = "Saisie invalide.Veuillez réessayer."
         }
 };
 
-const validLastName = function (inputLastName) 
-{
+const validLastName = function (inputLastName){
         let lastNameErrorMsg = inputLastName.nextElementSibling;
         if (nameRegex.test(inputLastName.value)){
         lastNameErrorMsg.innerHTML = '';
@@ -357,10 +348,10 @@ validationFormulair()
 
 /*****************************************************envoi de la commande avec les informations du formulaire une fois vérifier********************************** */
 
-
 function envoiCommand() {
         
         const order = document.getElementById("order");
+        // si la fonction validationFormulair n'est pas true on peux pas continué
         order.addEventListener("click", (event)=>{
                 event.preventDefault(); // on lui dire quoi faire au clique
                 // on récupere les infos du client
@@ -370,12 +361,20 @@ function envoiCommand() {
                 let inputCity = document.getElementById("city");
                 let inputEmail = document.getElementById("email");
 
-        // on crée un array avec les element du LocalStorage
+                if (nameRegex.test(inputName.value) === false ||
+                nameRegex.test(inputLastName.value) === false || 
+                addressRegex.test(inputAddress.value) === false || 
+                nameRegex.test(inputCity.value) === false || 
+                emailRegex.test(inputEmail.value) === false){
+                        alert("Merci de bien remplir tout les champs du formulaire");
+                }else{
+
+        // on crée un array avec les elements du LocalStorage
         let products = [];
         for (let i = 0; i < panierKanap.length; i++){
                 products.push(panierKanap[i].id)
         }
-        
+
         const order = {
                 contact :{
                         firstName: inputName.value,
@@ -401,7 +400,7 @@ function envoiCommand() {
         {
         localStorage.clear();
         window.location.assign(`confirmation.html?order=${data.orderId}`) // assigne a une nouvelle page choisi.
-        })
+        })}
         })
 };
 envoiCommand();
