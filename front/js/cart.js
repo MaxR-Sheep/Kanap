@@ -176,10 +176,13 @@ function changeQuantity(event){  //fonction qui lance le changement des inputs q
         let kanapId = parentElement.closest("article").dataset.id; //on recherche au plus pret l'article avec comme data associer a id
         let colorKanap = parentElement.closest("article").dataset.color;
         unitPrice = mapKanapIdAndUnitPrice.get(kanapId) * Number(event.target.value); // mapKanapIdAndUnitPrice.get(kanapId) ça sort la valeur associée à l'id donc la quantité
+        if (Number(event.target.value)>100) {
+                alert("Quantité trop importante")
+        }else{
         refreshContent(parentElement);      
         saveQuantityInLocalStorage(kanapId, colorKanap, Number(event.target.value));
         getAllUnitPrice();
-        getTotalQuantity();
+        getTotalQuantity()};
 }
 
 function saveQuantityInLocalStorage(kanapId, colorKanap, quantityKanap){
