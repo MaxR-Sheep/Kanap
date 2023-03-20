@@ -296,15 +296,15 @@ function validationFormulair() {
   });
 
   form.lastName.addEventListener("change", function () {
-    validLastName(this);
+    validLastName();
   });
 
   form.address.addEventListener("change", function () {
-    validAddress(this);
+    validAddress();
   });
 
   form.city.addEventListener("change", function () {
-    validCity(this);
+    validCity();
   });
 
   form.email.addEventListener("change", function () {
