@@ -55,7 +55,8 @@ let valeurCouleur = "";// variable pour les couleurs qui seront choisi
 const tabColor = document.getElementById("colors");// const pour que l'ID colors soit utiliser
 tabColor.setAttribute("onchange","saveColorLet()");// permet de memoriser la couleur du kanap ajout de onchange en html et de la function savecouleur
 
-function appelCouleur(afficheProduit){  // function pour crée un menu déroulant avec les couleurs
+// function pour crée un menu déroulant avec les couleurs
+function appelCouleur(afficheProduit){  
     for (let color in afficheProduit.colors){
         let optionColors = document.createElement("option");
         optionColors.innerText = afficheProduit.colors[color];
@@ -64,7 +65,8 @@ function appelCouleur(afficheProduit){  // function pour crée un menu déroulan
     };
 };
 
-function saveColorLet(){ // fonction qui sélectionne la couleur souhaiter
+// fonction qui sélectionne la couleur souhaiter
+function saveColorLet(){ 
     const valurOfSelect = document.getElementById("colors").value;
     valeurCouleur = valurOfSelect;
 };
@@ -73,7 +75,7 @@ let numbreElement = '';// pour récupérer la quantité
 const quanti = document.getElementById("quantity");
 quanti.addEventListener("change",saveQuantity, false );
 
-
+// fonction pour sauvegarder la quantité
 function saveQuantity(){
     const valueQuantity = document.getElementById("quantity").value;
     numbreElement = Number(valueQuantity);
@@ -82,7 +84,8 @@ function saveQuantity(){
 const btnAddToPanier = document.getElementById("addToCart");
 btnAddToPanier.addEventListener("click", btnAddPanier, false);// utilisation de bouton pour ajouté au panier
 
-function goodQuantity(numbreElement) { // paramettre pour que la quantié choisit soit la bonne
+// fonction pour que la quantié choisit soit la bonne
+function goodQuantity(numbreElement) { 
     if (numbreElement <= 0 ){
         alert ("veuillez choisir une quantité entre 1 et 100")
     }else if ( numbreElement > 100) {
@@ -90,12 +93,14 @@ function goodQuantity(numbreElement) { // paramettre pour que la quantié choisi
     }
 }
 
-function  goodColor (valeurCouleur){ // fonction pour alerter s'il manque la couleur
+// fonction pour alerter s'il manque la couleur
+function  goodColor (valeurCouleur){ 
     if (valeurCouleur === "") {
         alert ("Veuillez choisir une couleur")
     }
 }
 
+//fonction pour ajouter au LS
 function ajoutLS (parsedCmd){
     alert ( "Articles ajouter au panier")
     localStorage.setItem("Panier", JSON.stringify(parsedCmd));//on ajoute au localstorage
@@ -103,7 +108,8 @@ function ajoutLS (parsedCmd){
 
 /*********************************utilisation bouton ajout au panier************************************* */
 
-function btnAddPanier() {// fonction pour le bouton achat
+// fonction pour le bouton achat
+function btnAddPanier() {
     goodColor (valeurCouleur);
     goodQuantity(numbreElement);
     let parsedCmd = JSON.parse(localStorage.getItem("Panier")); // appel le localstorage
